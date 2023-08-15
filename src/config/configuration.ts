@@ -22,7 +22,7 @@ export interface Configuration {
   env: Environment;
   server: {
     port: number;
-    address: string;
+    // address: string;
   };
   database: {
     host: string;
@@ -35,7 +35,7 @@ export interface Configuration {
   };
   defaultPassword: string;
   swagger: string;
-  corsOrigins: string[] | string;
+  // corsOrigins: string[] | string;
 }
 
 export default (): Configuration => {
@@ -44,8 +44,8 @@ export default (): Configuration => {
 
   // Server
   const serverPort = parseInt(getEnv('SERVER_PORT'), 10) || 3000;
-  const serverAddress =
-    getEnv('SERVER_ADDRESS') || `http://localhost:${serverPort}`;
+  // const serverAddress =
+  //   getEnv('SERVER_ADDRESS') || `http://localhost:${serverPort}`;
 
   // Database
   const databaseHost = encodeURI(getEnv('DB_HOST'));
@@ -60,14 +60,14 @@ export default (): Configuration => {
   const defaultPassword = getEnv('DEFAULT_PASSWORD');
 
   // ESMS
-  const corsOrigins = getEnv('CORS_ORIGINS')
-    ? JSON.parse(getEnv('CORS_ORIGINS'))
-    : '*';
+  // const corsOrigins = getEnv('CORS_ORIGINS')
+  //   ? JSON.parse(getEnv('CORS_ORIGINS'))
+  //   : '*';
   return {
     env,
     server: {
       port: serverPort,
-      address: serverAddress,
+      // address: serverAddress,
     },
     database: {
       host: databaseHost,
@@ -80,6 +80,6 @@ export default (): Configuration => {
     },
     defaultPassword,
     swagger,
-    corsOrigins,
+    // corsOrigins,
   };
 };

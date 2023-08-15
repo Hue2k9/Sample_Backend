@@ -6,12 +6,26 @@ import * as helmet from 'helmet';
 import { ValidationTypes } from 'class-validator';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filter/exception.filter';
-import configuration, { Configuration } from './config/configuration';
+import configuration, {
+  Configuration,
+  Environment,
+} from './config/configuration';
+import { ConfigService } from '@nestjs/config';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+  const environment = configService.get<Environment>('env');
   app.use(morgan('combined'));
-  app.useGlobalPipes(new ValidationPipe());
+
+  // Validation
+  app.useGlobalPipes(
+    new ValidationPipe({
+      disableErrorMessages: environment === Environment.PRODUCTION,
+      whitelist: true,
+    }),
+  );
   app.useGlobalFilters(new HttpExceptionFilter());
   // app.use(helmet());
 
@@ -21,6 +35,12 @@ async function bootstrap() {
     .setDescription('API description')
     .setVersion('1.0')
     .build();
+
+  //Cors
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
 
   const document = SwaggerModule.createDocument(app, config);
   const swaggerApi = configuration().swagger || 'api-docs';

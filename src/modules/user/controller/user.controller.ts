@@ -29,7 +29,8 @@ export class UserController {
   @HttpCode(201)
   @ApiBody({ type: userDto })
   async create(@Body() user: userDto) {
-    const data = await this.userService.create(userDto.plainToClass(user));
+    // const data = await this.userService.create(userDto.plainToClass(user));
+    const data = await this.userService.create(user);
     return ResponseDto.create(data, 201);
   }
 }
