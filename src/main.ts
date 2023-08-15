@@ -6,10 +6,10 @@ import * as helmet from 'helmet';
 import { ValidationTypes } from 'class-validator';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filter/exception.filter';
+import configuration, { Configuration } from './config/configuration';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.use(morgan('combined'));
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
@@ -23,7 +23,8 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  const swaggerApi = configuration().swagger || 'api-docs';
+  SwaggerModule.setup(swaggerApi, app, document);
 
   await app.listen(3000);
 }

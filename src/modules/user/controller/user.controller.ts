@@ -18,8 +18,10 @@ import { ResponseDto } from 'src/common/dto/response/response.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get()
-  async find() {
-    const data = await this.userService.get({});
+  @ApiQuery({ name: 'cond', required: false })
+  async find(@Query('cond') cond: any) {
+    const conditions: any = (cond && JSON.parse(cond)) || {};
+    const data = await this.userService.get(conditions);
     return ResponseDto.create(data);
   }
 
@@ -27,13 +29,7 @@ export class UserController {
   @HttpCode(201)
   @ApiBody({ type: userDto })
   async create(@Body() user: userDto) {
-    // console.log(userDto.plainToClass(user));
-
     const data = await this.userService.create(userDto.plainToClass(user));
-    // console.log(data);
-    // const data = await this.userService.create(user);
-    // const response = ResponseDto.create(data);
-    // console.log(response);
     return ResponseDto.create(data, 201);
   }
 }
